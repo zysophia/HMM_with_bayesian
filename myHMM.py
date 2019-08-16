@@ -5,6 +5,9 @@ from abc import ABCMeta, abstractmethod
 from scipy.optimize import minimize
 
 class _baseHMM():
+    '''
+    A basic Hidden Markov Model, the probability density function to be determined.
+    '''
 
     __metaclass__ = ABCMeta
 
@@ -196,67 +199,36 @@ class _baseHMM():
         
         prob = prob/sum(prob)
         return prob, np.argmax(prob)
-    
-    def bayesian_refresh(self, l_prob, new_val, lamb=0.01):
-        b = self.occur_prob(new_val).reshape(1,-1)
-        l = l_prob.reshape(-1,1)
-        
-        count = 0
-        while count < 30:
-            #print(count)
-            count += 1
-            lab = np.dot(l,b)*self.transmat
-            add = (np.sum(lab)*(self.transmat-1)+lab)*self.transmat**(-1)
-            for i in range(self.n_state):
-                add[i,:] /= max(abs(add[i,:]))
-            new_transmat = self.transmat + add*lamb
-        
-            for j in range(self.n_state):
-                d = new_transmat[j,:]
-                if min(d)<=0:
-                    d = d - min(d) + 0.1**20
-                d = d/sum(d)
-                new_transmat[j,:] = d
 
-            p1 = np.prod(self.transmat**(self.transmat-1))*np.sum(np.dot(l,b)*self.transmat)
-            p2 = np.prod(new_transmat**(self.transmat-1))*np.sum(np.dot(l,b)*new_transmat)
-            diff = (p2-p1)/p1  
-            if diff<0.05:
-                break
-            self.transmat = new_transmat
-            
-        prob = np.zeros(self.n_state)
-        for i in range(len(prob)):
-            prob[i] = sum(l_prob*self.transmat[:,i]*self.occur_prob(new_val)[i])
-        prob = prob/sum(prob)
-        return prob, np.argmax(prob)
-    
+
     def bayesian_refresh_new(self, l_prob, new_val, lamb=0.3):
+        '''
+        This part is related to bayesian online refreshment. It is the core part of our HmmBayesian model.
+        '''
         b = self.occur_prob(new_val).reshape(1,-1)
         l = l_prob.reshape(-1,1)
         
-        count = 0
-        while count < 10:
-            #print(count)
-            count += 1
-            lab = np.dot(l,b)*self.transmat
+        tmp = self.transmat
+        for _ in range(10):
+
             new_transmat = np.zeros((self.n_state,self.n_state))
+            lab = np.dot(l,b)*tmp
             
             for i in range(self.n_state):
                 for j in range(self.n_state):
-                    new = (1-self.transmat[i,j])/(1-1/self.n_state-(l[i,0]*np.sum(b)/self.n_state-l[i,0]*b[0,j])/np.sum(lab))
-                    #print(new)
+                    new = (1-tmp[i,j])/(1-1/self.n_state-(l[i,0]*np.sum(b)/self.n_state-l[i,0]*b[0,j])/np.sum(lab))
+                
                     if new <= 0:
-                        new_transmat[i,:] = self.transmat[i,:]/(sum(self.transmat[i,:])-self.transmat[i,j])-np.exp(-10)/(self.n_state-1)
+                        new_transmat[i,:] = tmp[i,:]/(sum(tmp[i,:])-tmp[i,j])-np.exp(-10)/(self.n_state-1)
                         new_transmat[i,j] = np.exp(-10)
                     else:
                         new_transmat[i,j] = new
                 new_transmat[i,:] /= sum(new_transmat[i,:])
-            #print(model.transmat)
-            #print(new_transmat)
-            if np.sum(np.abs(new_transmat - self.transmat))<np.exp(-5):
+
+            if np.sum(np.abs(new_transmat - tmp))<np.exp(-5):
                 break
-            self.transmat = (1-lamb)*self.transmat + lamb*new_transmat
+            tmp = new_transmat
+        self.transmat = (1-lamb)*self.transmat + lamb*new_transmat
             
         prob = np.zeros(self.n_state)
         for i in range(len(prob)):
@@ -268,7 +240,9 @@ class _baseHMM():
     
 
 class GaussianHMM(_baseHMM):
-
+    '''
+    Hidden Markov Model with Gaussian distribution.
+    '''
     def __init__(self, n_state=1, x_size=1, n_iter=20, means = None, covs = None, prt = True):
         #print(startprob)
         _baseHMM.__init__(self, n_state=n_state, x_size=x_size,

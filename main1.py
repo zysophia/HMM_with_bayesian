@@ -2,11 +2,11 @@ import backtrack_on_index as btrk
 import pandas as pd
 import datetime
 
-idx_set = ["return_1","ma_20","volatility_20","bias_20","ma_5", "volatility_5", \
-           "bias_5","ATR_14","ma_diff_5_20","macd","RSI_6",\
-           "RSI_12","BR_26", "AR_26","volume"]
+idx_set = ["return_1","ma_20","volatility_20","bias_20","ma_5", "volatility_5"]#, \
+          # "bias_5","ATR_14","ma_diff_5_20","macd","RSI_6",\
+          # "RSI_12","BR_26", "AR_26","volume"]
 
-tstates_set = range(3,6)
+tstates_set = range(3,5)
 info_set = ["idx_names", "tstates", "c_in", "c_out", "rtn_annual", "annual_excess", \
             "win_rate", "maxdown", "sharpe", "trade_freq", "score"]
 

@@ -5,6 +5,9 @@ import tracking
 
 
 class StockData():
+    '''
+    This class handles a stock data database. We may retrieve data from a txt file and store it into the database, calculate common indexes and store it, and retrive data from the database.
+    '''
     def __init__(self):
         
         self.conn = sqlite3.connect('stocks.db')
@@ -13,7 +16,9 @@ class StockData():
         
         
     def fill_data(self, stkname = "000300"):
-        
+        '''
+        extract stockdata from the txt file named with stockname.txt, then store it into the database. This process goes in a reversed date order so we may skip the data which already exists in the database.
+        '''
         self.cursor.execute("CREATE TABLE IF NOT EXISTS {0} \
                             (date date PRIMARY KEY, \
                              open float, high float, low float, close float, volume float)"\
@@ -23,7 +28,7 @@ class StockData():
         if lastday:
             lastday = datetime.datetime.strptime(lastday, "%Y-%m-%d").date()
         
-        filename = 'C:/Users/lenovo/Desktop/毕业设计/'+ stkname +'.txt'
+        filename = 'original_stockdata/'+ stkname +'.txt'
         with open(filename, 'r') as f:
             
             lines = reversed(f.readlines())
@@ -45,7 +50,9 @@ class StockData():
         
         
     def cal_index(self, stkname = "000300", idx = ["return_1"]):
-        
+        '''
+        calculate common indexes and store it.
+        '''
         
         tdata = self.cursor.execute("SELECT * FROM {0} ORDER BY date".format("stk"+stkname)).fetchall()
         tdate, tclose, thigh, tlow, topen = [], [], [], [], []
@@ -340,7 +347,9 @@ class StockData():
           
     def get_data(self, stkname = "000300", idx = "close",  \
                  stdate = datetime.date(2018,1,1), endate = datetime.date(2019,1,1)):
-        
+        '''
+        Retrieve data from columns, return type is np.array.
+        '''
         selected = self.cursor.execute("SELECT {3} FROM {0} WHERE date >= '{1}' AND date <= '{2}' ORDER BY date" \
                             .format("stk"+stkname, str(stdate), str(endate), idx)).fetchall()
             
@@ -357,10 +366,13 @@ class StockData():
 
 
 if __name__ == "__main__":
+
     stockdata = StockData()
     stockdata.fill_data("000300")
+    '''
     stockdata.cal_index("000300",["return_1","ma_20","volatility_20","bias_20",\
                                   "ma_5", "volatility_5", "bias_5","ATR_14",\
                                   "ma_diff_5_20","macd","RSI_6","RSI_12","BR_26","AR_26"])
     #close = stockdata.get_data("000300","volume",datetime.date(2018,1,1),datetime.date(2019,1,1))
+    '''
     stockdata.conn.close()

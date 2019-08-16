@@ -1,0 +1,17 @@
+rtn_annual : 0.08438162893293
+c_in : 5
+c_out : 4
+win_rate : 0.799999999984
+avg_rtn : 0.013065865152835077
+maxdown : -0.005507167628210241
+volatility : 0.0464658486123186
+sharpe : 1.170356951546406
+annual_excess : -0.27334773170867355
+trade_freq : 11.479591836734695
+score : 36.6529495242973
+stk_name : 000300
+start : 2011-01-01
+split : 2018-10-01
+end : 2019-03-01
+tstates : 3
+idx_names : ['AR_26', 'volume']

@@ -5,16 +5,18 @@ import numpy as np
 from database import StockData
 from matplotlib import pyplot as plt
 
-
+'''
+This is totally for testing bayesian reference and has nothing to do with the main codes.
+'''
 
 stk_name = "000300"
-start = datetime.date(2006,1,1)
-split = datetime.date(2015,8,1)
-end = datetime.date(2019,4,1)
+start = datetime.date(2007,1,1)
+split = datetime.date(2008,1,1)
+end = datetime.date(2009,1,1)
 tstates = 3
-idx_names = ["return_1"]#,"ma_20","volatility_20","bias_20","ma_5", "volatility_5", \
-           #"bias_5","ATR_14","ma_diff_5_20","macd","RSI_6","RSI_12","BR_26",\
-           #"AR_26","volume"]
+idx_names = ["return_1","ma_20","volatility_20","bias_20","ma_5", "volatility_5", \
+           "bias_5","ATR_14","ma_diff_5_20","macd","RSI_6","RSI_12","BR_26",\
+           "AR_26","volume"]
 
 stockdata = StockData()
 tdates = np.array([datetime.datetime.strptime(i, "%Y-%m-%d").date() \
@@ -46,7 +48,7 @@ for i in range(len(idx_names)):
     lamb = 1
     for i in range(split_idx, len(indicator)):
         new_val = indicator[i,:]
-        l_prob,_ = model.bayesian_refresh_new(l_prob, new_val, lamb = 0.9)
+        l_prob,_ = model.bayesian_refresh_new(l_prob, new_val, lamb = 0.5)
     
     
     print(model.transmat)

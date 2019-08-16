@@ -1,0 +1,17 @@
+rtn_annual : -0.0006803171698769317
+c_in : 3
+c_out : 3
+win_rate : 0.6666666666444444
+avg_rtn : -0.003644331072587511
+maxdown : -0.030415069811144613
+volatility : 0.01761822960885187
+sharpe : -1.7413961476845732
+annual_excess : -0.03719312671531336
+trade_freq : 1.0245901639344264
+score : -25.711168230793163
+stk_name : 000300
+start : 2006-01-01
+split : 2015-01-01
+end : 2018-01-01
+tstates : 4
+idx_names : ['volatility_20']

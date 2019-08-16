@@ -1,0 +1,17 @@
+rtn_annual : -0.05488452549074441
+c_in : 27
+c_out : 27
+win_rate : 0.48148148147969827
+avg_rtn : -0.0029316055999228517
+maxdown : -0.2737190739696861
+volatility : 0.096678994332474
+sharpe : -0.8780038112398125
+annual_excess : -0.08854326321064349
+trade_freq : 9.221311475409836
+score : -19.749497764106245
+stk_name : 000300
+start : 2006-01-01
+split : 2015-01-01
+end : 2018-01-01
+tstates : 3
+idx_names : ['return_1']
